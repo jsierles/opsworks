@@ -15,6 +15,7 @@ class OpsWorks::CLI
 
         Commands
           ssh       #{OpsWorks::Commands::SSH.banner}
+          describe  #{OpsWorks::Commands::Describe.banner}
 
         For help with specific commands, run:
           opsworks COMMAND -h/--help
@@ -28,6 +29,8 @@ class OpsWorks::CLI
     case command
       when "ssh"
         OpsWorks::Commands::SSH.run
+      when "describe"
+        OpsWorks::Commands::Describe.run
       when nil
         Trollop::die "no command specified"
       else
