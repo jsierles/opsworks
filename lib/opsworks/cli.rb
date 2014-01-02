@@ -3,7 +3,7 @@ require 'opsworks'
 
 class OpsWorks::CLI
   def self.start
-    commands = %w(ssh)
+    commands = %w(ssh custom_ami)
 
     Trollop::options do
       version "opsworks #{OpsWorks::VERSION} " <<
@@ -14,7 +14,8 @@ class OpsWorks::CLI
         #{OpsWorks::SUMMARY}
 
         Commands
-          ssh       #{OpsWorks::Commands::SSH.banner}
+          ssh        #{OpsWorks::Commands::SSH.banner}
+          custom_ami #{OpsWorks::Commands::CustomAMI.banner}
 
         For help with specific commands, run:
           opsworks COMMAND -h/--help
@@ -28,6 +29,8 @@ class OpsWorks::CLI
     case command
       when "ssh"
         OpsWorks::Commands::SSH.run
+      when "custom_ami"
+        OpsWorks::Commands::CustomAMI.run
       when nil
         Trollop::die "no command specified"
       else
