@@ -3,6 +3,8 @@ require "opsworks/config"
 require "opsworks/commands/ssh"
 require "opsworks/commands/describe"
 require "opsworks/commands/custom_ami"
+require "opsworks/commands/capistrano"
+
 
 class String
   def unindent
