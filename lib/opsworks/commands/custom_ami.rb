@@ -35,7 +35,6 @@ module OpsWorks::Commands
       stacks = client.describe_stacks.data[:stacks]
       stack = stacks.detect {|s| options[:stack] == s[:name] }
       layers = client.describe_layers(stack_id: stack[:stack_id]).data[:layers]      
-      puts layers.inspect
       layer = layers.detect {|l| l[:name] == options[:layer] }
       
       ec2_client = AWS::EC2.new(region: stack[:region])
@@ -72,8 +71,10 @@ module OpsWorks::Commands
           client.stop_instance(instance_id: instance[:instance_id])
 
           run_with_time "Waiting for the instance to stop" do
+            
+            sleep 3
 
-            while client.describe_instances(layer_id: layer[:layer_id], instance_ids: [instance[:instance_id]]).data.first[:status] != "stopped"
+            while client.describe_instances(instance_ids: [instance[:instance_id]]).data.first[:status] != "stopped"
               puts ".".chomp
               sleep 3
             end

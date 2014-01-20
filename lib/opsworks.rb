@@ -4,6 +4,8 @@ require "opsworks/commands/ssh"
 require "opsworks/commands/describe"
 require "opsworks/commands/custom_ami"
 require "opsworks/commands/capistrano"
+require "opsworks/commands/run_command"
+require "opsworks/commands/create_instances"
 
 
 class String
