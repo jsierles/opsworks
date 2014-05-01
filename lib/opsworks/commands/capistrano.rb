@@ -19,25 +19,36 @@ module OpsWorks::Commands
 
           Options:
         EOS
-        opt :backup, "Backup old file config before updating", type: String
-        opt :variable_name, "Variable name of target host array. Default: domain", type: String
+
+        opt :stack, "Opsworks stack name", type: String        
+        opt :layer, "Opsworks layer name", type: String
+        opt :backup, "Backup old file config before updating", default: false
+        opt :role_name, "Name of your capistrano role. Default: app", type: String
         opt :file, "Path of capistrano role file. Default: ./config/deploy/opsworks.rb", type: String
+      end
+
+
+      %w(stack layer).each do |a|
+        if !options[a.to_sym]
+          Trollop.die(a.to_sym, "#{a} is required")
+        end
       end
 
       config = OpsWorks.config
 
       client = AWS::OpsWorks::Client.new
 
-      options[:variable_name] ||= "domain"
+      options[:variable_name] ||= "app"
       instances = []
 
-      config.stacks.each do |stack_id|
-        run_with_time "Fetching data for stack with id #{stack_id}..." do
-          result = client.describe_instances(stack_id: stack_id)
-          instances += result.instances.select { |i| i[:status] != "stopped" }
-        end
-      end
+      stacks = client.describe_stacks.data[:stacks]
+      stack = stacks.detect {|s| options[:stack] == s[:name] }
 
+      layers = client.describe_layers(stack_id: stack[:stack_id]).data[:layers].detect {|l| l[:name] == options[:layer]]}
+
+      result = client.describe_instances(stack_id: stack[:stack_id])
+      instances += result.instances.select { |i| i[:status] != "stopped" }
+      
       instances.reject! { |i| i[:elastic_ip].nil? && i[:public_ip].nil? }
       instances.collect! {|i| i[:elastic_ip] || i[:public_ip] }
 
@@ -47,9 +58,10 @@ module OpsWorks::Commands
 
       path = options[:file] || "./config/deploy/opsworks.rb"
 
-      old_contents = File.read(path)
+      old_contents = File.exists?(path) ?  File.read(path) : ""
 
       if options[:backup]
+
         base_name = path + ".backup"
 
         if File.exists? base_name

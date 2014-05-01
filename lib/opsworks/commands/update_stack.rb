@@ -4,9 +4,9 @@ require 'trollop'
 require 'opsworks'
 
 module OpsWorks::Commands
-  class RunCommand
+  class UpdateStack
     def self.banner
-      "Run an Opsworks"
+      "Update an Opsworks stack"
     end
 
     def self.run
@@ -17,11 +17,10 @@ module OpsWorks::Commands
           Options:
         EOS
         opt :stack, "Name of Opsworks stack", type: String
-        opt :command, "Command to run: setup, configure, execute_recipes, update_custom_cookbooks, update_dependencies", type: String
+        opt :custom_json_path, "Path to the custom JSON file", type: String
       end
 
-
-      %w(stack command).each do |a|
+      %w(stack).each do |a|
         if !options[a.to_sym]
           Trollop.die(a.to_sym, "#{a} is required")
         end
@@ -35,13 +34,8 @@ module OpsWorks::Commands
 
       stack = stacks.detect {|s| options[:stack] == s[:name] }
 
-      command = {name: options[:command]}
-
-      puts "Running #{options[:command]}..."
-
-      client.create_deployment(stack_id: stack[:stack_id], command: command)
-
-      puts "Done!"       
+      json - File.read(File.expand_path(options[:custom_json_p]))
+      client.update_stack(stack_id: stack[:stack_id], custom_json: json)
     end
   end
 end

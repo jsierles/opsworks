@@ -21,7 +21,7 @@ module OpsWorks::Commands
         EOS
         opt :update, "Update ~/.ssh/config directly"
         opt :backup, "Backup old SSH config before updating"
-        opt :quiet,  "Use SSH LogLevel quiet", default: true
+        opt :quiet,  "Use SSH LogLevel quiet", default: false
         opt :key_checking,
             "Check SSH host keys (this can be annoying since dynamic " <<
             "instances often change IP number)", short: 'c', default: false
