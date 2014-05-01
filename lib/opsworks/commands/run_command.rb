@@ -18,10 +18,11 @@ module OpsWorks::Commands
         EOS
         opt :stack, "Name of Opsworks stack", type: String
         opt :layer, "Name of Opsworks layer", type: String
-        opt :hostname, "Desired instance hostname", type: String
+        opt :command, "Command to run: setup, configure, execute_recipes, update_custom_cookbooks, update_dependencies", type: String
       end
 
-      %w(stack layer instance_hostname ami_name).each do |a|
+
+      %w(stack layer command).each do |a|
         if !options[a.to_sym]
           Trollop.die(a.to_sym, "#{a} is required")
         end
@@ -32,25 +33,18 @@ module OpsWorks::Commands
       client = AWS::OpsWorks::Client.new
       
       stacks = client.describe_stacks.data[:stacks]
+
       stack = stacks.detect {|s| options[:stack] == s[:name] }
       layers = client.describe_layers(stack_id: stack[:stack_id]).data[:layers]      
       layer = layers.detect {|l| l[:name] == options[:layer] }
-      
-      ec2_client = AWS::EC2.new(region: stack[:region])
 
-      create_options = {stack: stack[:stack_id], layer_ids: [layer[:layer_id]]}
-      
-      create_options[:auto_scaling_type] = options[:auto_scaling_type] || nil
+      command = {name: options[:command]}
 
-      if options[:ami_id]
-        create_options[:ami_id] = options[:ami_id]
-        create_options[:os] = "Custom"
-      else
-        create_options[:os] = "Ubuntu 12.04 LTS"
-      end
+      puts "Running #{options[:command]}..."
 
-      client.create_instance(create_options)        
-       
+      client.create_deployment(stack_id: stack[:stack_id], command: command)
+
+      puts "Done!"       
     end
   end
 end
