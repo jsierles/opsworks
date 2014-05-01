@@ -44,7 +44,7 @@ module OpsWorks::Commands
       stacks = client.describe_stacks.data[:stacks]
       stack = stacks.detect {|s| options[:stack] == s[:name] }
 
-      layers = client.describe_layers(stack_id: stack[:stack_id]).data[:layers].detect {|l| l[:name] == options[:layer]]}
+      layers = client.describe_layers(stack_id: stack[:stack_id]).data[:layers].detect {|l| l[:name] == options[:layer]}
 
       result = client.describe_instances(stack_id: stack[:stack_id])
       instances += result.instances.select { |i| i[:status] != "stopped" }
