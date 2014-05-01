@@ -33,8 +33,8 @@ module OpsWorks::Commands
 
       instances = []
 
-      config.stacks.each do |stack_id|
-        result = client.describe_instances(stack_id: stack_id)
+      client.describe_stacks.data[:stacks].each do |stack|
+        result = client.describe_instances(stack_id: stack[:stack_id])
         instances += result.instances.select { |i| i[:status] != "stopped" }
       end
 
