@@ -42,7 +42,8 @@ class OpsWorks::CLI
       when "create_instances"
         OpsWorks::Commands::CreateInstances.run
       when "capistrano"
-        OpsWorks::Commands::Capistrano.runwhen "play"
+        OpsWorks::Commands::Capistrano.run
+      when "play"
         require 'pry'
         config = OpsWorks.config
         client = AWS::OpsWorks::Client.new
