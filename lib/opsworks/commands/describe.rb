@@ -44,7 +44,7 @@ module OpsWorks::Commands
               message << " https://console.aws.amazon.com/opsworks/home?#/stack/#{stack[:stack_id]}/deployments/#{deployment[:deployment_id]}"
             end
           end
-            puts "Deployment: #{deployment[:command][:name]}, #{deployment[:status]}, #{message}"
+            puts "Deployment by #{deployment[:iam_user_arn].split("/").last}: #{deployment[:command][:name]}, #{deployment[:status]}, #{message}"
         end
 
         client.describe_layers(stack_id: stack[:stack_id]).data[:layers].each do |layer|
