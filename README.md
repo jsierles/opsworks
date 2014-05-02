@@ -12,6 +12,29 @@ Run `opsworks` with one of the following commands:
    instances with the same name in multiple stacks, the one from the first
    stack will be used by SSH.
 
+* `describe` Describe your stack(s).
+
+   This prints your stack info, including latest 5 deployments and state of
+   the layers/instances. Useful to see how deployments are going.
+
+* `capistrano` Create a capistrano configuration for a specific layer
+
+   If you deploy via capistrano, this helps you generate your server array in a config file.
+
+*  `custom_ami` Build a custom AMI based on an existing Opsworks instance.
+
+  This is a *work in progress*. It runs commands for cleaning up the instance for packaging,
+  then hits EC2 to do the AMI packaging work.
+
+*  `run_command' Run deployment commands, for deploying apps, updating recipes or managing lifecycle events
+
+  Run commands like: setup, configure, update_custom_cookbooks, update_dependencies
+  Execute_recipes is not supported yet.
+
+*  `update_stack` Update a stack's custom JSON
+
+  Update the stack's custom JSON from a file. No other attributes are updatable yet!
+
 ## Configuration
 
 This gem uses the same configuration file as the [AWS CLI][aws_cli]. This
@@ -23,6 +46,8 @@ Add the following section to `~/.aws/config` or to the file pointed out by the
     [opsworks]
     stack-id=<MY STACK IDs>
     ssh-user-name=<MY SSH USER NAME>
+
+The stack ID is optional for most commands, as they accept a command line option.
 
 The stack ID can be found in the stack settings, under _OpsWorks ID_ (or in the
 address bar of your browser as
