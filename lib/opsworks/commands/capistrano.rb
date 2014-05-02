@@ -23,7 +23,7 @@ module OpsWorks::Commands
         opt :stack, "Opsworks stack name", type: String        
         opt :layer, "Opsworks layer name", type: String
         opt :backup, "Backup old file config before updating", default: false
-        opt :role_name, "Name of your capistrano role. Default: app", type: String
+        opt :variable_name, "Name of your capistrano variable containing the array of server IPs. Default: servers", type: String
         opt :file, "Path of capistrano role file. Default: ./config/deploy/opsworks.rb", type: String
       end
 
@@ -38,7 +38,7 @@ module OpsWorks::Commands
 
       client = AWS::OpsWorks::Client.new
 
-      options[:variable_name] ||= "app"
+      options[:variable_name] ||= "servers"
       instances = []
 
       stacks = client.describe_stacks.data[:stacks]

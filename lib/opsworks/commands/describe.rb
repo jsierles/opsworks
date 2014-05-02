@@ -32,6 +32,17 @@ module OpsWorks::Commands
         if options[:json]
           puts stack[:custom_json]
         end
+  
+        client.describe_deployments(stack_id: stack[:stack_id]).data[:deployments][0..5].each do |deployment|
+          started = Time.parse(deployment[:created_at])
+
+          if deployment[:status] == "running"
+            message = "Running since #{(Time.now - started).round} seconds"
+          else
+            message = "Took #{Time.parse(deployment[:completed_at]) - started} seconds"
+          end
+            puts "Deployment: #{deployment[:command][:name]}, #{deployment[:status]}, #{message}"
+        end
 
         client.describe_layers(stack_id: stack[:stack_id]).data[:layers].each do |layer|
           puts
