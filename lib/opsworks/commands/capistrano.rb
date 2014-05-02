@@ -44,9 +44,9 @@ module OpsWorks::Commands
       stacks = client.describe_stacks.data[:stacks]
       stack = stacks.detect {|s| options[:stack] == s[:name] }
 
-      layers = client.describe_layers(stack_id: stack[:stack_id]).data[:layers].detect {|l| l[:name] == options[:layer]}
+      layer = client.describe_layers(stack_id: stack[:stack_id]).data[:layers].detect {|l| l[:name] == options[:layer]}
 
-      result = client.describe_instances(stack_id: stack[:stack_id])
+      result = client.describe_instances(layer_id: layer[:layer_id])
       instances += result.instances.select { |i| i[:status] != "stopped" }
       
       instances.reject! { |i| i[:elastic_ip].nil? && i[:public_ip].nil? }
