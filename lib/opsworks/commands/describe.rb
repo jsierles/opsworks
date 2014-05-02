@@ -40,6 +40,9 @@ module OpsWorks::Commands
             message = "Running since #{(Time.now - started).round} seconds"
           else
             message = "Took #{Time.parse(deployment[:completed_at]) - started} seconds"
+            if deployment[:status] == "failed"
+              message << " https://console.aws.amazon.com/opsworks/home?#/stack/#{stack[:stack_id]}/deployments/#{deployment[:deployment_id]}"
+            end
           end
             puts "Deployment: #{deployment[:command][:name]}, #{deployment[:status]}, #{message}"
         end
