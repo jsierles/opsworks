@@ -34,7 +34,7 @@ module OpsWorks::Commands
 
       stack = stacks.detect {|s| options[:stack] == s[:name] }
 
-      json - File.read(File.expand_path(options[:custom_json_p]))
+      json - File.read(File.expand_path(options[:custom_json_path]))
       client.update_stack(stack_id: stack[:stack_id], custom_json: json)
     end
   end
